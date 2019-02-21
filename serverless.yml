@@ -1,0 +1,66 @@
+service: gochallenge 
+frameworkVersion: ">=1.28.0 <2.0.0"
+
+provider:
+  name: aws
+  runtime: go1.x
+  region: eu-west-3
+  stage: v11
+  apiKeys:
+    - goChallengeKeyV1
+  apiGateway:
+    apiKeySourceType: HEADER
+  iamRoleStatements: 
+    - Effect: Allow
+      Action: 
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "*"
+
+package:
+ exclude:
+   - ./**
+ include:
+   - ./bin/**
+
+# functions include two api call handler
+functions:
+  add-device:
+    handler: bin/addDevice
+    events:
+    - http:
+        path: api/devices
+        method: post
+        private: true
+  get-device:
+    handler: bin/getDevice
+    events:
+    - http:
+        path: api/devices/{id}
+        method: get
+        request:
+            parameters:
+              paths:
+                id: true
+  add-model:
+    handler: bin/addModel
+    events:
+    - http:
+        path: api/devicemodels
+        method: post
+        private: true
+  get-model:
+    handler: bin/getModel
+    events:
+    - http:
+        path: api/devicemodels/{id}
+        method: get
+        request:
+            parameters:
+              paths:
+                id: true
