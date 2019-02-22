@@ -33,13 +33,13 @@ Example: GET https://api123.amazonaws.com/api/devices/id1
 
 ## Setup
 ###### Pre-requisites
-- install nodejs
-- install go
-- install aws-cli
-- install serverless framework using `npm install -g serverless`
+- Install [nodejs](https://nodejs.org/en/download/)
+- Install [Go languge](https://golang.org/doc/install)
+- Install [aws-cli](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)
+- Install serverless framework using `npm install -g serverless`
 
 ###### Dependencies
-Place this folder into the `src` folder of `${GOPATH}`, This code needs the following packages in go vendors to work correctly:
+Place this repo into the `src` folder of `${GOPATH}` or add it to your `${PATH}`. This repo needs the following packages in golang vendors to work correctly:
 - `github.com/aws/aws-lambda-go/*`
 - `github.com/aws/aws-sdk-go/*`
 - `github.com/google/uuid`
@@ -53,14 +53,14 @@ AWS Secret Access Key [None]: your-secret-key
 Default region name [None]: eu-west-3
 Default output format [None]: json
 ```
-<br>
+
 2. `POST` methods are protected by api-key and you should generate an api key and use it as the value of the `x-api-key` key in request header. To do so, edit `serverless.yml` file and set `stage` and `apiKeys` for the first time. An api key will be generated after the first deploy and `stage` will be in the api's final url as follows:
 <pre>
 https://e7rjun495i.execute-api.eu-west-3.amazonaws.com/<b>stage</b>/api/devices
 </pre>
-<br>
-3. All neccessary commands are called using `make` command (Linux64-only). Alternatively you can run the following commands one by one:<br>
-```
+
+3. All neccessary commands are called using `make` command (Linux64-only). Alternatively you can run the following commands one by one:
+<pre>
 build clean deploy
 dep ensure -v
 env GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/addModel addModel/main.go
@@ -70,14 +70,14 @@ env GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/getModel getModel/m
 rm -rf ./bin ./vendor Gopkg.lock
 clean build
 sls deploy --verbose
-```
-<br>
+</pre>
+
 You can see the output of a successful deploy on amazon servers.
 ![Terminal Output](img/terminal.png?raw=true "Terminal Output")
 
 ## Routes
 There are four final routes in this api as follows:
-1. `POST` on `/api/devices` will add a new device to database. Payload should be plain text (`JSON`). The api also check for duplicate serial numbers and prevent you from storing a device twice. `deviceModel` should be a valid `ID` of a model. you can get a valid `ID` of a model from part 2 of this section. The result of this call is an new id for new device. Remember this is a protected uri, so you have to set api key in `x-api-key` key of the header. `JSON` payload should be formated as follows:<br>
+1. `POST` on `/api/devices` will add a new device to database. Payload should be plain text (`JSON`). The api also check for duplicate serial numbers and prevent you from storing a device twice. `deviceModel` should be a valid `ID` of a model. you can get a valid `ID` of a model from part 2 of this section. The result of this call is an new id for new device. Remember this is a protected uri, so you have to set api key in `x-api-key` key of the header. `JSON` payload should be formated as follows:
 ```
 {
 	"name": "Test name",
@@ -86,16 +86,16 @@ There are four final routes in this api as follows:
 	"note": "Test note"
 }
 ```
-<br>
-2. `POST` on `/api/devicemodels` will add a new model to database. Payload should be plain text (`JSON`). The api also check for duplicate names and prevent you from storing a model twice. In any successful case a call will return the model `ID`. `JSON` payload should be formated as follows:<br>
+
+2. `POST` on `/api/devicemodels` will add a new model to database. Payload should be plain text (`JSON`). The api also check for duplicate names and prevent you from storing a model twice. In any successful case a call will return the model `ID`. `JSON` payload should be formated as follows:
 ```
 {
 	"name": "Test name"
 }
 ```
-<br>
+
 3. `GET` on `/api/devices/{id}` will return the device information in `JSON` format. The `{id}` path variable should be replaced with a valid id. This call will return the device name and other details if exists and not found error, otherwise.
-<br>
+
 4. `GET` on `/api/devicemodels/{id}` will return the model information in `JSON` format. The `{id}` path variable should be replaced with a valid id. This call will return the model name and id if exists and not found error, otherwise.
 ## Test
 
