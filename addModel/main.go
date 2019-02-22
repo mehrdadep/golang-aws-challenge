@@ -13,18 +13,18 @@ import (
 
 // Handler for add model request
 func Handler(request functions.Request) (functions.Response, error) {
-	var body map[string]*json.RawMessage
-	err := json.Unmarshal([]byte(request.Body), &body)
-	if err != nil {
+
+	m := functions.Model{}
+	if err := json.Unmarshal([]byte(request.Body), &m.X); err != nil {
 		return functions.ReturnResponse(fmt.Sprintf("{\"message\":\"JSON Parse error\",\"details\":\"%s\"}", err.Error()), 500)
 	}
-
-	var name string
-	err = json.Unmarshal(*body["name"], &name)
-	if err != nil {
+	if n, ok := m.X["name"].(string); ok {
+		m.Name = string(n)
+	} else {
 		return functions.ReturnResponse("{\"message\":\"Name in request body is required\"}", 400)
 	}
-	tempModel, err := functions.FindModelByName(name)
+
+	tempModel, err := functions.FindModelByName(m.Name)
 	if err != nil {
 		return functions.ReturnResponse(fmt.Sprintf("{\"message\":\"%s\"}", err.Error()), 500)
 	}
@@ -41,7 +41,7 @@ func Handler(request functions.Request) (functions.Response, error) {
 					S: aws.String(modelID.String()),
 				},
 				"Name": {
-					S: aws.String(name),
+					S: aws.String(m.Name),
 				},
 			},
 		}

@@ -14,43 +14,44 @@ import (
 // Handler for add device request
 func Handler(request functions.Request) (functions.Response, error) {
 
-	var body map[string]*json.RawMessage
-	err := json.Unmarshal([]byte(request.Body), &body)
-	if err != nil {
-		return functions.ReturnResponse(fmt.Sprintf("{\"message\":\"%s\",\"details\":\"%s\"}", "JSON Parse error", err.Error()), 500)
+	d := functions.Device{}
+	if err := json.Unmarshal([]byte(request.Body), &d.X); err != nil {
+		return functions.ReturnResponse(fmt.Sprintf("{\"message\":\"JSON Parse error\",\"details\":\"%s\"}", err.Error()), 500)
 	}
-
-	var name string
-	err = json.Unmarshal(*body["name"], &name)
-	if err != nil {
+	if n, ok := d.X["name"].(string); ok {
+		d.Name = string(n)
+	} else {
 		return functions.ReturnResponse("{\"message\":\"Name in request body is required\"}", 400)
 	}
 
-	var note string
-	err = json.Unmarshal(*body["note"], &note)
-	if err != nil {
+	if n, ok := d.X["note"].(string); ok {
+		d.Note = string(n)
+	} else {
 		return functions.ReturnResponse("{\"message\":\"Note in request body is required\"}", 400)
 	}
 
-	var serial string
-	err = json.Unmarshal(*body["serial"], &serial)
-	if err != nil {
+	if n, ok := d.X["serial"].(string); ok {
+		d.Serial = string(n)
+	} else {
 		return functions.ReturnResponse("{\"message\":\"Serial in request body is required\"}", 400)
 	}
 
-	var deviceModel string
-	err = json.Unmarshal(*body["deviceModel"], &deviceModel)
-	if err != nil {
-		return functions.ReturnResponse("{\"message\":\"deviceModel in request is required\"}", 400)
+	if n, ok := d.X["deviceModel"].(string); ok {
+		d.DeviceModel = string(n)
+	} else {
+		return functions.ReturnResponse("{\"message\":\"deviceModel in request body is required\"}", 400)
 	}
 
 	// Create model from request body
-	tempModel, err := functions.FindModelByID(deviceModel)
+	tempModel, err := functions.FindModelByID(d.DeviceModel)
+	if err != nil {
+		return functions.ReturnResponse("{\"message\":\"Error in finding model device!\",\"details\":\"Database error\"}", 400)
+	}
 	if tempModel == nil {
 		return functions.ReturnResponse("{\"message\":\"modelDevice id not found!\",\"details\":\"POST name to /devicemodels to get model id\"}", 400)
 	}
 	// Create device from request body
-	tempDevice, err := functions.FindDeviceBySerial(serial)
+	tempDevice, err := functions.FindDeviceBySerial(d.Serial)
 	if tempDevice == nil {
 		deviceID, err := uuid.NewUUID()
 		if err != nil {
@@ -59,10 +60,10 @@ func Handler(request functions.Request) (functions.Response, error) {
 
 		device := functions.Device{
 			ID:          deviceID.String(),
-			Name:        name,
-			Note:        note,
-			Serial:      serial,
-			DeviceModel: deviceModel,
+			Name:        d.Name,
+			Note:        d.Note,
+			Serial:      d.Serial,
+			DeviceModel: d.DeviceModel,
 		}
 
 		input := &dynamodb.PutItemInput{
@@ -99,7 +100,7 @@ func Handler(request functions.Request) (functions.Response, error) {
 		successMessage := fmt.Sprintf("{\"message\":\"New Device created successfully\", \"Deive ID\": \"%s\"}", device.ID)
 		return functions.ReturnResponse(successMessage, 201)
 	}
-	duplicateMessage := fmt.Sprintf("{\"message\":\"Device with this serial already exists\", \"Serial\": \"%s\"}", serial)
+	duplicateMessage := fmt.Sprintf("{\"message\":\"Device with this serial already exists\", \"Serial\": \"%s\"}", d.Serial)
 	return functions.ReturnResponse(duplicateMessage, 200)
 
 }

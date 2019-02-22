@@ -11,17 +11,19 @@ import (
 
 // A Model contains model name
 type Model struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID   string                 `json:"id"`
+	Name string                 `json:"name"`
+	X    map[string]interface{} `json:"-"`
 }
 
 // A Device contains name, serial, note and deviceModel
 type Device struct {
-	ID          string `json:"id"`
-	Name        string `json:"name"`
-	Serial      string `json:"serial"`
-	Note        string `json:"note"`
-	DeviceModel string `json:"deviceModel"`
+	ID          string                 `json:"id"`
+	Name        string                 `json:"name"`
+	Serial      string                 `json:"serial"`
+	Note        string                 `json:"note"`
+	DeviceModel string                 `json:"deviceModel"`
+	X           map[string]interface{} `json:"-"`
 }
 
 // Response Type
