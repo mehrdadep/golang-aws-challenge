@@ -77,7 +77,7 @@ You can see the output of a successful deploy on amazon servers.
 
 ## Routes
 There are four final routes in this api as follows:
-1. `POST` on `/api/devices` will add a new device to database. Payload should be plain text (`JSON`). The api also check for duplicate serial numbers and prevent you from storing a device twice. `deviceModel` should be a valid `ID` of a model. you can get a valid `ID` of a model from part 2 of this section. The result of this call is an new id for new device. Remember this is a protected uri, so you have to set api key in `x-api-key` key of the header. `JSON` payload should be formated as follows:
+1. `POST` on `/api/devices` will add a new device to database. Payload should be plain text (`JSON`). The api also checks for duplicate serial numbers and prevents you from storing a device twice. `deviceModel` should be a valid `ID` of a model. you can get a valid `ID` of a model from part 2 of this section. The result of this call is a new id for a new device. Remember this is a protected url, so you have to set api key in `x-api-key` key of the header. `JSON` payload should be formated as follows:
 ```
 {
 	"name": "Test name",
@@ -87,7 +87,7 @@ There are four final routes in this api as follows:
 }
 ```
 
-2. `POST` on `/api/devicemodels` will add a new model to database. Payload should be plain text (`JSON`). The api also check for duplicate names and prevent you from storing a model twice. In any successful case a call will return the model `ID`. `JSON` payload should be formated as follows:
+2. `POST` on `/api/devicemodels` will add a new model to database. Payload should be plain text (`JSON`). The api also checks for duplicate names and prevents you from storing a model twice. In any successful case a call will return the model `ID`. Remember this is also a protected url, so you have to set api key in `x-api-key` key of the header. `JSON` payload should be formated as follows:
 ```
 {
 	"name": "Test name"
