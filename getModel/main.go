@@ -1,33 +1,29 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
 	"gochallenge/code/functions"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
-// Response Type
-type Response events.APIGatewayProxyResponse
-
 // Handler for get model request
-func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func Handler(request functions.Request) (functions.Response, error) {
 
 	ID := request.PathParameters["id"]
 	tempModel, err := functions.FindModelByID(ID)
 	if err != nil {
-		return events.APIGatewayProxyResponse{Body: "{\"message\":\"Something went wrong\",\"details\":\"check path\"}",
-			Headers: map[string]string{"content-type": "application/json"}, StatusCode: 500}, nil
+		return functions.ReturnResponse("{\"message\":\"Something went wrong\",\"details\":\"check path\"}"), 500)
 	}
 	if tempModel == nil {
-		return events.APIGatewayProxyResponse{Body: "{\"message\":\"Model id not found!\",\"details\":\"id is invalid\"}",
-			Headers: map[string]string{"content-type": "application/json"}, StatusCode: 400}, nil
+		return functions.ReturnResponse("{\"message\":\"Model id not found!\",\"details\":\"id is invalid\"}"), 400)
 	}
-	successMessage := fmt.Sprintf("{\"id\":\"%s\", \"name\": \"%s\"}", tempModel.ID, tempModel.Name)
-	return events.APIGatewayProxyResponse{Body: successMessage,
-		Headers: map[string]string{"content-type": "application/json"}, StatusCode: 200}, nil
-
+	body, err := json.Marshal(tempModel)
+	if err != nil {
+		return functions.ReturnResponse("{\"message\":\"Something went wrong\",\"details\":\"dabase error\"}", 500)
+	}
+	return functions.ReturnResponse(string(body), 200)
 }
 
 func main() {

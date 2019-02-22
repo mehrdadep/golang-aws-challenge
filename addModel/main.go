@@ -5,40 +5,33 @@ import (
 	"fmt"
 	"gochallenge/code/functions"
 
-	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/google/uuid"
 )
 
-// Response Type
-type Response events.APIGatewayProxyResponse
-
 // Handler for add model request
-func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func Handler(request functions.Request) (functions.Response, error) {
 	var body map[string]*json.RawMessage
 	err := json.Unmarshal([]byte(request.Body), &body)
 	if err != nil {
-		return events.APIGatewayProxyResponse{Body: fmt.Sprintf("{\"message\":\"%s\",\"details\":\"%s\"}", "JSON Parse error", err.Error()), StatusCode: 400}, nil
+		return functions.ReturnResponse(fmt.Sprintf("{\"message\":\"JSON Parse error\",\"details\":\"%s\"}", err.Error()), 500)
 	}
 
 	var name string
 	err = json.Unmarshal(*body["name"], &name)
 	if err != nil {
-		return events.APIGatewayProxyResponse{Body: "{\"message\":\"Name in request body is required\"}",
-			Headers: map[string]string{"content-type": "application/json"}, StatusCode: 400}, nil
+		return functions.ReturnResponse("{\"message\":\"Name in request body is required\"}", 400)
 	}
 	tempModel, err := functions.FindModelByName(name)
 	if err != nil {
-		return events.APIGatewayProxyResponse{Body: fmt.Sprintf("{\"message\":\"%s\"}", err.Error()),
-			Headers: map[string]string{"content-type": "application/json"}, StatusCode: 500}, nil
+		return functions.ReturnResponse(fmt.Sprintf("{\"message\":\"%s\"}", err.Error()), 500)
 	}
 	if tempModel == nil {
 		modelID, err := uuid.NewUUID()
 		if err != nil {
-			return events.APIGatewayProxyResponse{Body: fmt.Sprintf("{\"message\":\"%s\"}", err.Error()),
-				Headers: map[string]string{"content-type": "application/json"}, StatusCode: 500}, nil
+			return functions.ReturnResponse(fmt.Sprintf("{\"message\":\"%s\"}", err.Error()), 500)
 		}
 
 		input := &dynamodb.PutItemInput{
@@ -54,25 +47,21 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		}
 		svc, err := functions.ConnectDB()
 		if err != nil {
-			message := fmt.Sprintf("{\"message\":\"%s\",\"details\":\"%s\"}", "Database connection creation error:", err.Error())
-			return events.APIGatewayProxyResponse{Body: message,
-				Headers: map[string]string{"content-type": "application/json"}, StatusCode: 500}, nil
+			return functions.ReturnResponse(fmt.Sprintf("{\"message\":\"%s\",\"details\":\"%s\"}",
+				"Database connection creation error:", err.Error()), 500)
+
 		}
 
 		_, err = svc.PutItem(input)
 		if err != nil {
-			message := fmt.Sprintf("{\"message\":\"%s\",\"details\":\"%s\"}", "Got error calling PutItem:", err.Error())
-			return events.APIGatewayProxyResponse{Body: message,
-				Headers: map[string]string{"content-type": "application/json"}, StatusCode: 500}, nil
+			return functions.ReturnResponse(fmt.Sprintf("{\"message\":\"%s\",\"details\":\"%s\"}", "Error inserting data", err.Error()), 500)
 		}
-
 		successMessage := fmt.Sprintf("{\"message\":\"New Model created successfully\", \"Model ID\": \"%s\"}", modelID.String())
-		return events.APIGatewayProxyResponse{Body: successMessage,
-			Headers: map[string]string{"content-type": "application/json"}, StatusCode: 201}, nil
+		return functions.ReturnResponse(successMessage, 201)
 	}
-	successMessage := fmt.Sprintf("{\"message\":\"a Model with this name exists\", \"Model ID\": \"%s\"}", tempModel.ID)
-	return events.APIGatewayProxyResponse{Body: successMessage,
-		Headers: map[string]string{"content-type": "application/json"}, StatusCode: 200}, nil
+	duplicateMessage := fmt.Sprintf("{\"message\":\"a Model with this name exists\", \"Model ID\": \"%s\"}", tempModel.ID)
+	return functions.ReturnResponse(duplicateMessage, 200)
+
 }
 
 func main() {

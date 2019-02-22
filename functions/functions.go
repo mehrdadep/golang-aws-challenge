@@ -1,6 +1,7 @@
 package functions
 
 import (
+	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
@@ -22,6 +23,12 @@ type Device struct {
 	Note        string `json:"note"`
 	DeviceModel string `json:"deviceModel"`
 }
+
+// Response Type
+type Response events.APIGatewayProxyResponse
+
+// Request Type
+type Request events.APIGatewayProxyRequest
 
 // FindModelByID find a model based on it's ID
 // return Model item if exists
@@ -183,4 +190,9 @@ func ConnectDB() (*dynamodb.DynamoDB, error) {
 	// Create DynamoDB client
 	svc := dynamodb.New(sess)
 	return svc, nil
+}
+
+// ReturnResponse resturns json body with selected status code
+func ReturnResponse(body string, code int) (Response, error) {
+	return Response{Body: body, Headers: map[string]string{"content-type": "application/json"}, StatusCode: code}, nil
 }

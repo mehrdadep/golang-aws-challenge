@@ -53,11 +53,12 @@ AWS Secret Access Key [None]: your-secret-key
 Default region name [None]: eu-west-3
 Default output format [None]: json
 ```
+<br>
 2. `POST` methods are protected by api-key and you should generate an api key and use it as the value of the `x-api-key` key in request header. To do so, edit `serverless.yml` file and set `stage` and `apiKeys` for the first time. `stage` will be in the api final url as follows:
 <pre>
 https://e7rjun495i.execute-api.eu-west-3.amazonaws.com/<b>stage</b>/api/devices
 </pre>
-and an api key will generate after the first deploy. 
+and an api key will generate after the first deploy. <br>
 3. All neccessary commands are called using `make` command (Linux64-only). Alternatively you can run the following commands:
 ```
 build clean deploy
@@ -72,6 +73,8 @@ sls deploy --verbose
 ```
 You can see the output of a successful deploy on amazon servers.
 ![Terminal Output](img/terminal.png?raw=true "Terminal Output")
+
+## Routes
 
 ## Test
 
