@@ -280,10 +280,18 @@ curl -X GET \
 ```
 
 #### Unit Tests
-In `terminal` (or `cmd`) change directory to `tests` by using `cd tests`. Now execute unit tests using `go test` command. There are two files in the `tests` directory containing unit tests on get and add device and models. You can change mocks to examine different behaviours on api. This the results of a simple run:
+In `terminal` (or `cmd`) change directory to each folder by using `cd foldername`. Now execute unit tests using `go test` command. There is a file in each folder called `main_test.go` containing unit tests on get and add device and models. You can change inputs to examine different behaviours on api. These are the results of a simple run on `getModel` unit test (one Pass and one Fail):
+```
+--- FAIL: TestHandler (1.58s)
+    --- FAIL: TestHandler/#00 (1.58s)
+        main_test.go:38: Handler() = {400 map[content-type:application/json] map[] {"message":"Model id not found!","details":"id is invalid"} false}, want {200 map[] map[]  false}
+FAIL
+exit status 1
+FAIL    golang-aws-challenge/getModel   2.782s
+```
 ```
 PASS
-ok  	golang-aws-challenge/tests	0.046s
+ok  	golang-aws-challenge/tests	2.046s
 ```
 ## TODO
 This challenge could be expanded to ask and do more with devices and models
