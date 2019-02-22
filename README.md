@@ -8,7 +8,7 @@
 - AWS Lambda
 - AWS DynamoDB
 
-###### Challenge apis
+#### API
 The API should accept the following JSON requests and produce the corresponding HTTP responses:
 ```
 Request 1:
@@ -32,18 +32,18 @@ Example: GET https://api123.amazonaws.com/api/devices/id1
 ```
 
 ## Setup
-###### Pre-requisites
+#### Pre-requisites
 - Install [NodeJS](https://nodejs.org/en/download/)
 - Install [Go languge](https://golang.org/doc/install)
 - Install [aws-cli](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html)
 - Install serverless framework using `npm install -g serverless`
 
-###### Dependencies
+#### Dependencies
 Place this repo  into the `src` folder of `${GOPATH}` or add it to your `${PATH}`. Note that the folder name must be `golang-aws-challenge`, otherwise you have to deal with package imports manually. This repo needs the following packages in golang vendors to work correctly:
 - `github.com/aws/aws-lambda-go/*`
 - `github.com/aws/aws-sdk-go/*`
 - `github.com/google/uuid`
-###### Configure AWS & Deploy
+#### Configure AWS & Deploy
 1. Configure aws cli (use your access key and secret key):
 `aws configure`
 Enter values as follows:
@@ -84,12 +84,15 @@ sls deploy --verbose
 </pre>
 
 You can see the output of a successful deploy on amazon servers.
+
 ![Terminal Output](img/terminal.png?raw=true "Terminal Output")
 
 ## Routes
 There are four final routes in this api as follows:
-###### `POST` on `/api/devices`
+
+#### `POST` on `/api/devices`
 This route will add a new device to database. Payload should be plain text (`JSON`). The api also checks for duplicate serial numbers and prevents you from storing a device twice. `deviceModel` should be a valid `ID` of a model. you can get a valid `ID` of a model from part 2 of this section. The result of this call is a new id for a new device. Remember this is a protected url, so you have to set api key in `x-api-key` key of the header. `JSON` payload should be formated as follows:
+
 ```
 {
 	"name": "Test name",
@@ -98,6 +101,7 @@ This route will add a new device to database. Payload should be plain text (`JSO
 	"note": "Test note"
 }
 ```
+
 The successful (Code: 201) result:
 ```
 {
@@ -105,6 +109,7 @@ The successful (Code: 201) result:
     "Deive ID": "e1d99eca-3684-11e9-be8b-e6039fb0c953"
 }
 ```
+
 If deviceModel id not exists (Code: 400):
 ```
 {
@@ -112,6 +117,7 @@ If deviceModel id not exists (Code: 400):
     "details": "POST name to /devicemodels to get model id"
 }
 ``` 
+
 If serial number is duplicate (Code: 200):
 ```
 {
@@ -119,12 +125,14 @@ If serial number is duplicate (Code: 200):
     "Serial": "A205ad056500"
 }
 ```
+
 If a field is not provided (Code: 400):
 ```
 {
     "message": "Serial in request body is required"
 }
 ```
+
 If `JSON` is malformed (Code: 500):
 ```
 {
@@ -132,19 +140,21 @@ If `JSON` is malformed (Code: 500):
     "details": "invalid character '\n' in string literal"
 }
 ```
+
 If api key is not provided correctly (Code: 403):
 ```
 {
     "message": "Forbidden"
 }
 ```
-######  `POST` on `/api/devicemodels` 
+####  `POST` on `/api/devicemodels` 
 This route will add a new model to database. Payload should be plain text (`JSON`). The api also checks for duplicate names and prevents you from storing a model twice. In any successful case a call will return the model `ID`. Remember this is also a protected url, so you have to set api key in `x-api-key` key of the header. `JSON` payload should be formated as follows:
 ```
 {
 	"name": "Test name"
 }
 ```
+
 The successful result (Code: 201):
 ```
 {
@@ -152,6 +162,7 @@ The successful result (Code: 201):
     "Model ID": "b6390810-3686-11e9-98d7-ca8618db46e6"
 }
 ```
+
 If a model with duplicate name exists (Code: 200):
 ```
 {
@@ -159,6 +170,7 @@ If a model with duplicate name exists (Code: 200):
     "Model ID": "4d4a1973-3682-11e9-8c33-9ecfa7849824"
 }
 ```
+
 If `JSON` is malformed (Code: 500):
 ```
 {
@@ -166,20 +178,23 @@ If `JSON` is malformed (Code: 500):
     "details": "invalid character '}' looking for beginning of object key string"
 }
 ```
+
 If name field is not provided (Code: 400):
 ```
 {
     "message": "Name in request body is required"
 }
 ```
+
 If api key is not provided correctly (Code: 403):
 ```
 {
     "message": "Forbidden"
 }
 ```
-######  `GET` on `/api/devices/{id}`
+####  `GET` on `/api/devices/{id}`
 This route will return the device information in `JSON` format. The `{id}` path variable should be replaced with a valid id. If the device exsits, the call will return the device name and other details, otherwise the result will be a `404 Error`
+
 The successful result (Code: 200):
 ```
 {
@@ -190,6 +205,7 @@ The successful result (Code: 200):
     "deviceModel": "ee230a7b-3615-11e9-88d9-2288fa4453c9"
 }
 ```
+
 If device id not exists (Code: 400):
 ```
 {
@@ -199,6 +215,7 @@ If device id not exists (Code: 400):
 ```
 #### `GET` on `/api/devicemodels/{id}`
 This route will return the model information in `JSON` format. The `{id}` path variable should be replaced with a valid id. If the model exsits, the call will return the model name and id, otherwise the result will be a `404 Error`
+
 The successful result (Code: 200):
 ```
 {
@@ -206,6 +223,7 @@ The successful result (Code: 200):
     "name": "Model test"
 }
 ```
+
 If model id not exists (Code: 400):
 ```
 {
@@ -217,6 +235,7 @@ If model id not exists (Code: 400):
 
 ## TODO
 This challenge could be expanded to ask and do more with devices and models
+
 - Save extra fileds for `Device` and `Model` from `JSON` file into `dynamodb` as well
 - Add search by other fields
 - Create new model along with a new device
