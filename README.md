@@ -53,7 +53,18 @@ AWS Secret Access Key [None]: your-secret-key
 Default region name [None]: eu-west-3
 Default output format [None]: json
 ```
-
+2. Create two tables in the database named `Model` and `Device`. These tables store information about models and devices. You can create these tables using `aws-cli` with the following commands:
+```
+aws dynamodb create-table --table-name Device --attribute-definitions \
+AttributeName=ID,AttributeType=S \
+--key-schema AttributeName=ID,KeyType=HASH \
+--provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5
+```
+```
+aws dynamodb create-table --table-name Model --attribute-definitions \
+AttributeName=ID,AttributeType=S --key-schema AttributeName=ID,KeyType=HASH \
+--provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5
+```
 2. `POST` methods are protected by api-key and you should generate an api key and use it as the value of the `x-api-key` key in request header. To do so, edit `serverless.yml` file and set `stage` and `apiKeys` for the first time. An api key will be generated after the first deploy and `stage` will be in the api's final url as follows:
 <pre>
 https://e7rjun495i.execute-api.eu-west-3.amazonaws.com/<b>stage</b>/api/devices
@@ -94,9 +105,9 @@ There are four final routes in this api as follows:
 }
 ```
 
-3. `GET` on `/api/devices/{id}` will return the device information in `JSON` format. The `{id}` path variable should be replaced with a valid id. This call will return the device name and other details if exists and not found error, otherwise.
+3. `GET` on `/api/devices/{id}` will return the device information in `JSON` format. The `{id}` path variable should be replaced with a valid id. If the device exsits, the call will return the device name and other details, otherwise the result will be a `404 Error`
 
-4. `GET` on `/api/devicemodels/{id}` will return the model information in `JSON` format. The `{id}` path variable should be replaced with a valid id. This call will return the model name and id if exists and not found error, otherwise.
+4. `GET` on `/api/devicemodels/{id}` will return the model information in `JSON` format. The `{id}` path variable should be replaced with a valid id. If the model exsits, the call will return the model name and id, otherwise the result will be a `404 Error`
 ## Test
 
 ## Maintainer
