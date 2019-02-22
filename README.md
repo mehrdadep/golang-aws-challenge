@@ -107,7 +107,7 @@ The successful (Code: 201) result:
 }
 ```
 
-If deviceModel id not exists (Code: 400):
+If deviceModel id not exists (Code: 404):
 ```
 {
     "message": "modelDevice id not found!",
@@ -123,7 +123,7 @@ If serial number is duplicate (Code: 200):
 }
 ```
 
-If a field is not provided (Code: 400):
+If a field is not provided (Code: 404):
 ```
 {
     "message": "Serial in request body is required"
@@ -176,7 +176,7 @@ If `JSON` is malformed (Code: 500):
 }
 ```
 
-If name field is not provided (Code: 400):
+If name field is not provided (Code: 404):
 ```
 {
     "message": "Name in request body is required"
@@ -203,7 +203,7 @@ The successful result (Code: 200):
 }
 ```
 
-If device id not exists (Code: 400):
+If device id not exists (Code: 404):
 ```
 {
     "message": "Device id not found!",
@@ -221,7 +221,7 @@ The successful result (Code: 200):
 }
 ```
 
-If model id not exists (Code: 400):
+If model id not exists (Code: 404):
 ```
 {
     "message": "Model id not found!",
