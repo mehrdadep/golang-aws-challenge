@@ -232,7 +232,11 @@ If model id not exists (Code: 400):
 }
 ```
 ## Test
-
+In `terminal` (or `cmd`) change directory to `tests` by using `cd tests`. Now execute unit tests using `go test` command. There are two files in the `tests` directory containing unit tests on get and add device and models. You can change mocks to examine different behaviours on api. This the results of a simple run:
+```
+PASS
+ok  	golang-aws-challenge/tests	0.046s
+```
 ## TODO
 This challenge could be expanded to ask and do more with devices and models
 
