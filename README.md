@@ -180,10 +180,39 @@ If api key is not provided correctly (Code: 403):
 ```
 ######  `GET` on `/api/devices/{id}`
 This route will return the device information in `JSON` format. The `{id}` path variable should be replaced with a valid id. If the device exsits, the call will return the device name and other details, otherwise the result will be a `404 Error`
-
+The successful result (Code: 200):
+```
+{
+    "id": "249cae6a-3619-11e9-872e-3ec11d02de65",
+    "name": "Test device name",
+    "serial": "A205ad050",
+    "note": "This is a simple note",
+    "deviceModel": "ee230a7b-3615-11e9-88d9-2288fa4453c9"
+}
+```
+If device id not exists (Code: 400):
+```
+{
+    "message": "Device id not found!",
+    "details": "id is invalid"
+}
+```
 ######  `GET` on `/api/devicemodels/{id}`
 This route will return the model information in `JSON` format. The `{id}` path variable should be replaced with a valid id. If the model exsits, the call will return the model name and id, otherwise the result will be a `404 Error`
-
+The successful result (Code: 200):
+```
+{
+    "id": "ee230a7b-3615-11e9-88d9-2288fa4453c9",
+    "name": "Model test"
+}
+```
+If model id not exists (Code: 400):
+```
+{
+    "message": "Model id not found!",
+    "details": "id is invalid"
+}
+```
 ## Test
 
 ## TODO
