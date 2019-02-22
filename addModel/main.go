@@ -18,12 +18,15 @@ func Handler(request functions.Request) (functions.Response, error) {
 	if err := json.Unmarshal([]byte(request.Body), &m.X); err != nil {
 		return functions.ReturnResponse(fmt.Sprintf("{\"message\":\"JSON Parse error\",\"details\":\"%s\"}", err.Error()), 500)
 	}
+
+	// Check for name field in request body
 	if n, ok := m.X["name"].(string); ok {
 		m.Name = string(n)
 	} else {
 		return functions.ReturnResponse("{\"message\":\"Name in request body is required\"}", 400)
 	}
 
+	// Check if model exists by name
 	tempModel, err := functions.FindModelByName(m.Name)
 	if err != nil {
 		return functions.ReturnResponse(fmt.Sprintf("{\"message\":\"%s\"}", err.Error()), 500)
@@ -31,6 +34,7 @@ func Handler(request functions.Request) (functions.Response, error) {
 	if tempModel == nil {
 		modelID, err := uuid.NewUUID()
 		if err != nil {
+			// Error creating uuid
 			return functions.ReturnResponse(fmt.Sprintf("{\"message\":\"%s\"}", err.Error()), 500)
 		}
 

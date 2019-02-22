@@ -292,7 +292,7 @@ This challenge could be expanded to ask and do more with devices and models
 - Add search by other fields
 - Create new model along with a new device
 
-## Maintainer
+## Author & Maintainer
 Mehrdad Esmaeilpour:
 - [LinkedIn](https://www.linkedin.com/in/mehrdadep/)
 - [Twitter](https://twitter.com/mehrdadep)

@@ -18,6 +18,9 @@ func Handler(request functions.Request) (functions.Response, error) {
 	if err := json.Unmarshal([]byte(request.Body), &d.X); err != nil {
 		return functions.ReturnResponse(fmt.Sprintf("{\"message\":\"JSON Parse error\",\"details\":\"%s\"}", err.Error()), 500)
 	}
+
+	//Check for fields one by one
+
 	if n, ok := d.X["name"].(string); ok {
 		d.Name = string(n)
 	} else {
@@ -42,7 +45,7 @@ func Handler(request functions.Request) (functions.Response, error) {
 		return functions.ReturnResponse("{\"message\":\"deviceModel in request body is required\"}", 400)
 	}
 
-	// Create model from request body
+	// Check model id from request body
 	tempModel, err := functions.FindModelByID(d.DeviceModel)
 	if err != nil {
 		return functions.ReturnResponse("{\"message\":\"Error in finding model device!\",\"details\":\"Database error\"}", 400)
@@ -50,14 +53,17 @@ func Handler(request functions.Request) (functions.Response, error) {
 	if tempModel == nil {
 		return functions.ReturnResponse("{\"message\":\"modelDevice id not found!\",\"details\":\"POST name to /devicemodels to get model id\"}", 400)
 	}
-	// Create device from request body
+
+	// Check for device serial
 	tempDevice, err := functions.FindDeviceBySerial(d.Serial)
 	if tempDevice == nil {
 		deviceID, err := uuid.NewUUID()
 		if err != nil {
+			// An error in generatin UUID
 			return functions.ReturnResponse(fmt.Sprintf("{\"message\":\"%s\"}", err.Error()), 500)
 		}
 
+		// Create device from request body
 		device := functions.Device{
 			ID:          deviceID.String(),
 			Name:        d.Name,

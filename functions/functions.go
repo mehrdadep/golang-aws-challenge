@@ -146,12 +146,12 @@ func FindDeviceBySerial(serial string) (*Device, error) {
 // FindDeviceByID find a device based on it's id
 // return Device item if exists
 // return nil if not
-func FindDeviceByID(serial string) (*Device, error) {
+func FindDeviceByID(id string) (*Device, error) {
 	svc, err := ConnectDB()
 	if err != nil {
 		return nil, err
 	}
-	filt := expression.Name("ID").Equal(expression.Value(serial))
+	filt := expression.Name("ID").Equal(expression.Value(id))
 	proj := expression.NamesList(expression.Name("ID"), expression.Name("Name"),
 		expression.Name("Serial"), expression.Name("Note"), expression.Name("deviceModel"))
 	expr, err := expression.NewBuilder().WithFilter(filt).WithProjection(proj).Build()
