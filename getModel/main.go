@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"gochallenge/code/functions"
+	"golang-aws-challenge/functions"
 
 	"github.com/aws/aws-lambda-go/lambda"
 )

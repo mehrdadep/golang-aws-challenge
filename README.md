@@ -39,7 +39,7 @@ Example: GET https://api123.amazonaws.com/api/devices/id1
 - Install serverless framework using `npm install -g serverless`
 
 ###### Dependencies
-Place this repo into the `src` folder of `${GOPATH}` or add it to your `${PATH}`. This repo needs the following packages in golang vendors to work correctly:
+Place this repo  into the `src` folder of `${GOPATH}` or add it to your `${PATH}`. Note that the folder name must be `golang-aws-challenge`, otherwise you have to deal with package imports manually. This repo needs the following packages in golang vendors to work correctly:
 - `github.com/aws/aws-lambda-go/*`
 - `github.com/aws/aws-sdk-go/*`
 - `github.com/google/uuid`
