@@ -54,12 +54,12 @@ Default region name [None]: eu-west-3
 Default output format [None]: json
 ```
 <br>
-2. `POST` methods are protected by api-key and you should generate an api key and use it as the value of the `x-api-key` key in request header. To do so, edit `serverless.yml` file and set `stage` and `apiKeys` for the first time. `stage` will be in the api final url as follows:
+2. `POST` methods are protected by api-key and you should generate an api key and use it as the value of the `x-api-key` key in request header. To do so, edit `serverless.yml` file and set `stage` and `apiKeys` for the first time. An api key will be generated after the first deploy and `stage` will be in the api's final url as follows:
 <pre>
 https://e7rjun495i.execute-api.eu-west-3.amazonaws.com/<b>stage</b>/api/devices
 </pre>
-and an api key will generate after the first deploy. <br>
-3. All neccessary commands are called using `make` command (Linux64-only). Alternatively you can run the following commands:
+<br>
+3. All neccessary commands are called using `make` command (Linux64-only). Alternatively you can run the following commands one by one:<br>
 ```
 build clean deploy
 dep ensure -v
@@ -71,11 +71,32 @@ rm -rf ./bin ./vendor Gopkg.lock
 clean build
 sls deploy --verbose
 ```
+<br>
 You can see the output of a successful deploy on amazon servers.
 ![Terminal Output](img/terminal.png?raw=true "Terminal Output")
 
 ## Routes
-
+There are four final routes in this api as follows:
+1. `POST` on `/api/devices` will add a new device to database. Payload should be plain text (`JSON`). The api also check for duplicate serial numbers and prevent you from storing a device twice. `deviceModel` should be a valid `ID` of a model. you can get a valid `ID` of a model from part 2 of this section. The result of this call is an new id for new device. Remember this is a protected uri, so you have to set api key in `x-api-key` key of the header. `JSON` payload should be formated as follows:<br>
+```
+{
+	"name": "Test name",
+	"serial": "A205ad0500",
+	"deviceModel":"ee230a7b-3615-11e9-88d9-2288fa44503c9",
+	"note": "Test note"
+}
+```
+<br>
+2. `POST` on `/api/devicemodels` will add a new model to database. Payload should be plain text (`JSON`). The api also check for duplicate names and prevent you from storing a model twice. In any successful case a call will return the model `ID`. `JSON` payload should be formated as follows:<br>
+```
+{
+	"name": "Test name"
+}
+```
+<br>
+3. `GET` on `/api/devices/{id}` will return the device information in `JSON` format. The `{id}` path variable should be replaced with a valid id. This call will return the device name and other details if exists and not found error, otherwise.
+<br>
+4. `GET` on `/api/devicemodels/{id}` will return the model information in `JSON` format. The `{id}` path variable should be replaced with a valid id. This call will return the model name and id if exists and not found error, otherwise.
 ## Test
 
 ## Maintainer

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"gochallenge/code/functions"
 
-	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
@@ -14,10 +13,10 @@ func Handler(request functions.Request) (functions.Response, error) {
 	ID := request.PathParameters["id"]
 	tempModel, err := functions.FindModelByID(ID)
 	if err != nil {
-		return functions.ReturnResponse("{\"message\":\"Something went wrong\",\"details\":\"check path\"}"), 500)
+		return functions.ReturnResponse("{\"message\":\"Something went wrong\",\"details\":\"check path\"}", 500)
 	}
 	if tempModel == nil {
-		return functions.ReturnResponse("{\"message\":\"Model id not found!\",\"details\":\"id is invalid\"}"), 400)
+		return functions.ReturnResponse("{\"message\":\"Model id not found!\",\"details\":\"id is invalid\"}", 400)
 	}
 	body, err := json.Marshal(tempModel)
 	if err != nil {
