@@ -197,7 +197,7 @@ If device id not exists (Code: 400):
     "details": "id is invalid"
 }
 ```
-######  `GET` on `/api/devicemodels/{id}`
+#### `GET` on `/api/devicemodels/{id}`
 This route will return the model information in `JSON` format. The `{id}` path variable should be replaced with a valid id. If the model exsits, the call will return the model name and id, otherwise the result will be a `404 Error`
 The successful result (Code: 200):
 ```
