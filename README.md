@@ -232,6 +232,57 @@ If model id not exists (Code: 400):
 }
 ```
 ## Test
+#### cURL on existings (uploaded) api
+This test use `cURL` on an existing api (test acount). Note that this url may be unreachable after a while. 
+
+1. `POST` on `/api/devices`:
+```
+curl -X POST \
+  https://6e1qp5h76k.execute-api.eu-west-3.amazonaws.com/v2/api/devices \
+  -H 'Content-Type: application/json' \
+  -H 'Postman-Token: b91961fc-1508-4889-94a5-e3236200c6a2' \
+  -H 'cache-control: no-cache' \
+  -H 'x-api-key: 3d83tuCd9f4X4yzTeOGMD8TNU6AM3xMH9vWVTcSr' \
+  -d '{
+	"name": "Test name2",
+	"serial": "A205ad056500",
+	"deviceModel":"ee230a7b-3615-11e9-88d9-2288fa4453c9",
+	"note": "Test note"
+}'
+```
+
+2. `POST` on `/api/devicemodels`:
+```
+curl -X POST \
+  https://6e1qp5h76k.execute-api.eu-west-3.amazonaws.com/v2/api/devicemodels \
+  -H 'Content-Type: application/json' \
+  -H 'Postman-Token: 819a9d4b-564c-474a-99af-f39fcecad90c' \
+  -H 'cache-control: no-cache' \
+  -H 'x-api-key: 3d83tuCd9f4X4yzTeOGMD8TNU6AM3xMH9vWVTcSr' \
+  -d '{
+	"name": "Model Thre2e05"
+}'
+```
+
+3. `GET` on `/api/devicemodels/{id}`:
+```
+curl -X GET \
+  https://6e1qp5h76k.execute-api.eu-west-3.amazonaws.com/v2/api/devices/249cae6a-3619-11e9-872e-30ec11d02de65 \
+  -H 'Content-Type: application/json' \
+  -H 'Postman-Token: c9dba994-c2fd-47a0-8634-1e7dd5be4e9d' \
+  -H 'cache-control: no-cache'
+```
+
+4. `GET` on `/api/devices/{id}`:
+```
+curl -X GET \
+  https://6e1qp5h76k.execute-api.eu-west-3.amazonaws.com/v2/api/devicemodels/ee230a7b-3615-11e9-88d9-2288fa4453c9 \
+  -H 'Content-Type: application/json' \
+  -H 'Postman-Token: 282e1e43-eeaa-4dd9-be6f-2e148357585e' \
+  -H 'cache-control: no-cache'
+```
+
+#### Unit Tests
 In `terminal` (or `cmd`) change directory to `tests` by using `cd tests`. Now execute unit tests using `go test` command. There are two files in the `tests` directory containing unit tests on get and add device and models. You can change mocks to examine different behaviours on api. This the results of a simple run:
 ```
 PASS

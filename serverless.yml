@@ -5,9 +5,9 @@ provider:
   name: aws
   runtime: go1.x
   region: eu-west-3
-  stage: v11
+  stage: v2
   apiKeys:
-    - goChallengeKeyV1
+    - goChallengeAPIKey
   apiGateway:
     apiKeySourceType: HEADER
   iamRoleStatements: 
