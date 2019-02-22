@@ -70,16 +70,13 @@ AttributeName=ID,AttributeType=S --key-schema AttributeName=ID,KeyType=HASH \
 https://e7rjun495i.execute-api.eu-west-3.amazonaws.com/<b>stage</b>/api/devices
 </pre>
 
-3. All neccessary commands are called using `make` command (Linux64-only). Alternatively you can run the following commands one by one:
+3. All neccessary commands are called using `make` command (Linux64-only). Alternatively (on Windows or mac) you can run the following commands one by one:
 <pre>
-build clean deploy
 dep ensure -v
 env GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/addModel addModel/main.go
 env GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/addDevice addDevice/main.go
 env GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/getDevice getDevice/main.go
 env GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/getModel getModel/main.go
-rm -rf ./bin ./vendor Gopkg.lock
-clean build
 sls deploy --verbose
 </pre>
 
