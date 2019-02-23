@@ -47,3 +47,17 @@ func TestHandler(t *testing.T) {
 		})
 	}
 }
+
+func Test_main(t *testing.T) {
+	tests := []struct {
+		name string
+	}{
+		// main runs lambda Start. nothing to test here
+		// lambda package is imported from external sources
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			main()
+		})
+	}
+}

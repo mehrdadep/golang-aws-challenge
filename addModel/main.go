@@ -60,11 +60,9 @@ func Handler(request functions.Request) (functions.Response, error) {
 		if err != nil {
 			return functions.ReturnResponse(fmt.Sprintf("{\"message\":\"%s\",\"details\":\"%s\"}", "Error inserting data", err.Error()), 500)
 		}
-		successMessage := fmt.Sprintf("{\"message\":\"New Model created successfully\", \"Model ID\": \"%s\"}", modelID.String())
-		return functions.ReturnResponse(successMessage, 201)
+		return functions.ReturnResponse(fmt.Sprintf("{\"message\":\"New Model created successfully\", \"Model ID\": \"%s\"}", modelID.String()), 201)
 	}
-	duplicateMessage := fmt.Sprintf("{\"message\":\"a Model with this name exists\", \"Model ID\": \"%s\"}", tempModel.ID)
-	return functions.ReturnResponse(duplicateMessage, 200)
+	return functions.ReturnResponse(fmt.Sprintf("{\"message\":\"a Model with this name exists\", \"Model ID\": \"%s\"}", tempModel.ID), 200)
 
 }
 

@@ -54,15 +54,6 @@ func TestHandler(t *testing.T) {
 			},
 			want: 500,
 		},
-		{
-			args: args{
-				functions.Request{
-					Body:    "\"name5\": \"Unit Test n\"}",
-					Headers: map[string]string{"x-api-key": "3d83tuCd9f4X4yzTeOGMD8TNU6AM3xMH00009vWVTcSr"},
-				},
-			},
-			want: 403,
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
