@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/aws/aws-sdk-go/service/dynamodb/expression"
+	"github.com/google/uuid"
 )
 
 // A Model contains model name
@@ -52,10 +53,7 @@ func FindModelByID(id string) (*Model, error) {
 	}
 	result, err := svc.Scan(params)
 
-	if err != nil {
-		return nil, nil
-	}
-	if len(result.Items) == 0 {
+	if err != nil || len(result.Items) == 0 {
 		return nil, nil
 	}
 	item := Model{}
@@ -89,10 +87,7 @@ func FindModelByName(name string) (*Model, error) {
 		TableName:                 aws.String("Model"),
 	}
 	result, err := svc.Scan(params)
-	if err != nil {
-		return nil, nil
-	}
-	if len(result.Items) == 0 {
+	if err != nil || len(result.Items) == 0 {
 		return nil, nil
 	}
 	item := Model{}
@@ -127,10 +122,7 @@ func FindDeviceBySerial(serial string) (*Device, error) {
 	}
 	result, err := svc.Scan(params)
 
-	if err != nil {
-		return nil, nil
-	}
-	if len(result.Items) == 0 {
+	if err != nil || len(result.Items) == 0 {
 		return nil, nil
 	}
 	item := Device{}
@@ -164,10 +156,7 @@ func FindDeviceByID(id string) (*Device, error) {
 	}
 	result, err := svc.Scan(params)
 
-	if err != nil {
-		return nil, nil
-	}
-	if len(result.Items) == 0 {
+	if err != nil || len(result.Items) == 0 {
 		return nil, nil
 	}
 	item := Device{}
@@ -178,6 +167,91 @@ func FindDeviceByID(id string) (*Device, error) {
 	}
 
 	return &item, nil
+}
+
+//CreateDevice create a new device in the database
+func CreateDevice(name string, note string, serial string, deviceModel string) (*Device, error) {
+	deviceID, err := uuid.NewUUID()
+	if err != nil {
+		return nil, err
+	}
+	// Create device from request body
+	device := Device{
+		ID:          deviceID.String(),
+		Name:        name,
+		Note:        note,
+		Serial:      serial,
+		DeviceModel: deviceModel,
+	}
+
+	input := &dynamodb.PutItemInput{
+		TableName: aws.String("Device"),
+		Item: map[string]*dynamodb.AttributeValue{
+			"ID": {
+				S: aws.String(device.ID),
+			},
+			"Name": {
+				S: aws.String(device.Name),
+			},
+			"Note": {
+				S: aws.String(device.Note),
+			},
+			"Serial": {
+				S: aws.String(device.Serial),
+			},
+			"deviceModel": {
+				S: aws.String(device.DeviceModel),
+			},
+		},
+	}
+
+	svc, err := ConnectDB()
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = svc.PutItem(input)
+	if err != nil {
+		return nil, err
+	}
+	return &device, nil
+
+}
+
+//CreateModel create a new model based on a name
+func CreateModel(name string) (*Model, error) {
+	modelID, err := uuid.NewUUID()
+	if err != nil {
+		return nil, err
+	}
+
+	input := &dynamodb.PutItemInput{
+		TableName: aws.String("Model"),
+		Item: map[string]*dynamodb.AttributeValue{
+			"ID": {
+				S: aws.String(modelID.String()),
+			},
+			"Name": {
+				S: aws.String(name),
+			},
+		},
+	}
+	svc, err := ConnectDB()
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = svc.PutItem(input)
+	if err != nil {
+		return nil, err
+	}
+	newModel := Model{
+		Name: name,
+		ID:   modelID.String(),
+	}
+
+	return &newModel, nil
+
 }
 
 // ConnectDB connect to database and return db

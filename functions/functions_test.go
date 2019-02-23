@@ -234,3 +234,71 @@ func TestFindModelByID(t *testing.T) {
 		})
 	}
 }
+
+func TestCreateModel(t *testing.T) {
+	type args struct {
+		name string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    string
+		wantErr bool
+	}{
+		{
+			args: args{
+				name: "Unit Test",
+			},
+			want: "Unit Test",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := CreateModel(tt.args.name)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("CreateModel() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got.Name, tt.want) {
+				t.Errorf("CreateModel() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestCreateDevice(t *testing.T) {
+	type args struct {
+		name        string
+		note        string
+		serial      string
+		deviceModel string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    string
+		wantErr bool
+	}{
+		{
+			args: args{
+				name:        "Unit Test",
+				note:        "Note test",
+				serial:      "serial test",
+				deviceModel: "model test",
+			},
+			want: "serial test",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := CreateDevice(tt.args.name, tt.args.note, tt.args.serial, tt.args.deviceModel)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("CreateDevice() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got.Serial, tt.want) {
+				t.Errorf("CreateDevice() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

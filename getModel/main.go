@@ -16,7 +16,6 @@ func Handler(request functions.Request) (functions.Response, error) {
 	//Find model by id
 	tempModel, err := functions.FindModelByID(ID)
 	if err != nil {
-		// a server side error
 		return functions.ReturnResponse("{\"message\":\"Something went wrong\",\"details\":\"check path\"}", 500)
 	}
 	if tempModel == nil {
@@ -24,9 +23,6 @@ func Handler(request functions.Request) (functions.Response, error) {
 	}
 	// convert into JSON format
 	body, err := json.Marshal(tempModel)
-	if err != nil {
-		return functions.ReturnResponse("{\"message\":\"Something went wrong\",\"details\":\"dabase error\"}", 500)
-	}
 	return functions.ReturnResponse(string(body), 200)
 }
 

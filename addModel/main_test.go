@@ -20,6 +20,14 @@ func TestHandler(t *testing.T) {
 		{
 			args: args{
 				functions.Request{
+					Body: "{\"name\": \"Unit Test new2\"}",
+				},
+			},
+			want: 201,
+		},
+		{
+			args: args{
+				functions.Request{
 					Body: "{\"name\": \"Unit Test n\"}",
 				},
 			},

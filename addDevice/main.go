@@ -6,9 +6,6 @@ import (
 	"golang-aws-challenge/functions"
 
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/dynamodb"
-	"github.com/google/uuid"
 )
 
 // Handler for add device request
@@ -56,58 +53,15 @@ func Handler(request functions.Request) (functions.Response, error) {
 
 	// Check for device serial
 	tempDevice, err := functions.FindDeviceBySerial(d.Serial)
-	if tempDevice == nil {
-		deviceID, err := uuid.NewUUID()
-		if err != nil {
-			// An error in generatin UUID
-			return functions.ReturnResponse(fmt.Sprintf("{\"message\":\"%s\"}", err.Error()), 500)
-		}
-
-		// Create device from request body
-		device := functions.Device{
-			ID:          deviceID.String(),
-			Name:        d.Name,
-			Note:        d.Note,
-			Serial:      d.Serial,
-			DeviceModel: d.DeviceModel,
-		}
-
-		input := &dynamodb.PutItemInput{
-			TableName: aws.String("Device"),
-			Item: map[string]*dynamodb.AttributeValue{
-				"ID": {
-					S: aws.String(device.ID),
-				},
-				"Name": {
-					S: aws.String(device.Name),
-				},
-				"Note": {
-					S: aws.String(device.Note),
-				},
-				"Serial": {
-					S: aws.String(device.Serial),
-				},
-				"deviceModel": {
-					S: aws.String(device.DeviceModel),
-				},
-			},
-		}
-
-		svc, err := functions.ConnectDB()
-		if err != nil {
-			return functions.ReturnResponse(fmt.Sprintf("{\"message\":\"%s\",\"details\":\"%s\"}", "Database connection creation error:", err.Error()), 500)
-		}
-
-		_, err = svc.PutItem(input)
-
-		if err != nil {
-			return functions.ReturnResponse(fmt.Sprintf("{\"message\":\"%s\",\"details\":\"%s\"}", "Got error inserting data", err.Error()), 500)
-		}
-		successMessage := fmt.Sprintf("{\"message\":\"New Device created successfully\", \"Deive ID\": \"%s\"}", device.ID)
-		return functions.ReturnResponse(successMessage, 201)
+	if tempDevice != nil {
+		return functions.ReturnResponse(fmt.Sprintf("{\"message\":\"Device with this serial already exists\", \"Serial\": \"%s\"}", d.Serial), 200)
 	}
-	duplicateMessage := fmt.Sprintf("{\"message\":\"Device with this serial already exists\", \"Serial\": \"%s\"}", d.Serial)
-	return functions.ReturnResponse(duplicateMessage, 200)
+	tempDevice, err = functions.CreateDevice(d.Name, d.Note, d.Serial, d.DeviceModel)
+
+	if err != nil {
+		return functions.ReturnResponse(fmt.Sprintf("{\"message\":\"%s\"}", err.Error()), 500)
+	}
+	return functions.ReturnResponse(fmt.Sprintf("{\"message\":\"New Device created successfully\", \"Deive ID\": \"%s\"}", tempDevice.ID), 201)
 
 }
 
