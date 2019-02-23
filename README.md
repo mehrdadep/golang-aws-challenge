@@ -295,7 +295,7 @@ PASS
 ok  	golang-aws-challenge/tests	1.046s
 ```
 #### Unit Test Coverage
-This is the result of the `go test ./... -cover coverpkg=main,functions` in the `golang-aws-challenge` folder. the average of these five numbers is **81.88%**
+This is the result of the `go test ./... -cover coverpkg=main,functions` in the `golang-aws-challenge` folder. The average of these five coverages is **81.88%**
 ```
 ok      golang-aws-challenge/addDevice  3.811s  coverage: 89.3% of statements
 ok      golang-aws-challenge/addModel   4.155s  coverage: 81.2% of statements
@@ -304,7 +304,7 @@ ok      golang-aws-challenge/getDevice  3.503s  coverage: 77.8% of statements
 ok      golang-aws-challenge/getModel   2.228s  coverage: 77.8% of statements
 ```
 The reuslt in `cmd` of windows:
-![Test Coverage](img/terminal.png?raw=true "Test Coverage")
+![Test Coverage](img/coverage.PNG?raw=true "Test Coverage")
 
 ## TODO
 This challenge could be expanded to ask and do more with devices and models
